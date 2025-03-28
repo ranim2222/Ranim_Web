@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Penalite;
@@ -10,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twilio\Rest\Client;
 
 class PenaliteController extends AbstractController
 {
@@ -41,7 +41,7 @@ class PenaliteController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        // Crée une liste de CIN pour le formulaire
+        // Créer une liste de CIN pour le formulaire
         $cinList = array_combine(array_column($cinChoices, 'cin'), array_column($cinChoices, 'cin'));
 
         // Créer une nouvelle entité Penalite
@@ -71,6 +71,32 @@ class PenaliteController extends AbstractController
 
             // Assigner la valeur calculée à l'entité Penalite
             $penalite->setSeuilAbs($seuilAbs);
+
+            // Vérifier si le seuil d'absence atteint 2 ou plus
+            if ($seuilAbs >= 2) {
+                // Configurer Twilio
+                $sid = ''; // Remplacer par ton SID Twilio
+                $authToken = ''; // Remplacer par ton token Twilio
+                $fromNumber = ''; // Remplacer par ton numéro Twilio
+
+                // Créer un client Twilio
+                $client = new Client($sid, $authToken);
+
+                // Message à envoyer
+                $message = "Le CIN numéro $cin a atteint le seuil d'absence de $seuilAbs.";
+
+                // Envoyer le SMS
+                $client->messages->create(
+                    '',  // Remplace par le numéro du destinataire
+                    [
+                        'from' => $fromNumber,
+                        'body' => $message,
+                    ]
+                );
+
+                // Ajouter un message flash pour informer l'utilisateur que le SMS a été envoyé
+                $this->addFlash('success', "Un SMS a été envoyé au numéro correspondant.");
+            }
 
             // Persist l'entité Penalite avec le seuil calculé
             $this->entityManager->persist($penalite);
