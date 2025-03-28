@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Penalite index{% endblock %}
+
+{% block body %}
+    <h1>Penalite index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Seuil_abs</th>
+                <th>Cin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for penalite in penalites %}
+            <tr>
+                <td>{{ penalite.type }}</td>
+                <td>{{ penalite.seuilAbs }}</td>
+                <td>{{ penalite.cin }}</td>
+                <td>
+                    <a href="{{ path('app_penalite_show', {'ID_pen': penalite.ID_pen}) }}">show</a>
+                    <a href="{{ path('app_penalite_edit', {'ID_pen': penalite.ID_pen}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No records found</td> {# ✅ colspan ajusté après suppression de l'ID #}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_penalite_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{{ form_start(form, { 'attr': {'novalidate': 'novalidate'} }) }}
+
+    {# Champ Type avec l'attribut 'required' mis à false #}
+    {{ form_row(form.type, { 'attr': {'required': false} }) }}
+    {{ form_errors(form.type) }}
+    
+    {# Champ Cin avec l'attribut 'required' mis à false #}
+    {{ form_row(form.cin, { 'attr': {'required': false} }) }}
+    {{ form_errors(form.cin) }}
+
+    {# Champ Seuil_abs avec l'attribut 'required' mis à false #}
+    {{ form_row(form.seuil_abs, { 'attr': {'required': false} }) }}
+    {{ form_errors(form.seuil_abs) }}
+
+    <button class="btn">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}

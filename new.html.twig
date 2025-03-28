@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une nouvelle pénalité{% endblock %}
+
+{% block body %}
+    <h1>Créer une nouvelle pénalité</h1>
+
+    {# Affichage des messages de flash si existants #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <script>
+                Swal.fire({
+                    icon: '{{ label == 'success' ? 'info' : 'error' }}',  {# Utiliser 'info' pour succès (bleu) #}
+                    title: '{{ label == 'success' ? 'Succès' : 'Erreur' }}',
+                    text: '{{ message }}',
+                    showConfirmButton: true
+                });
+            </script>
+        {% endfor %}
+    {% endfor %}
+
+    {{ form_start(form, { 'attr': {'novalidate': 'novalidate'} }) }} {# Désactive toute la validation HTML #}
+        {{ form_row(form.type) }}
+        {{ form_row(form.cin) }}
+        {{ form_row(form.seuil_abs) }}
+        <button class="btn btn-primary">Enregistrer</button>
+    {{ form_end(form) }}
+
+    {# Lien vers la liste des pénalités après ajout #}
+    <a href="{{ path('app_penalite_index') }}" class="btn btn-secondary">Retour à la liste des pénalités</a>
+
+    {# Lien vers la liste des absences #}
+    <a href="{{ path('app_absence_index') }}" class="btn btn-secondary">Retour à la liste des absences</a>
+
+    <script>
+        // Sélectionner le champ CIN et seuil_abs
+        const cinField = document.getElementById('penalite_cin');
+        const seuilAbsField = document.getElementById('penalite_seuil_abs');
+
+        // Vérifier si les éléments existent avant d'ajouter l'événement
+        if (cinField && seuilAbsField) {
+            // Lorsque le CIN est modifié
+            cinField.addEventListener('change', function () {
+                const cinValue = cinField.value;
+
+                if (cinValue) {
+                    // Faire un appel AJAX pour récupérer le nombre d'absences pour ce CIN
+                    fetch(`/penalite/nbr_abs/${cinValue}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const nbrAbs = data.nbr_abs;
+
+                            // Arrondir la valeur divisée par 2 pour afficher un nombre entier sans virgule
+                            const seuilArrondi = Math.floor(nbrAbs / 2);  // Arrondi vers le bas (ou Math.trunc() si vous voulez simplement tronquer)
+
+                            // Assurez-vous que la valeur est affichée correctement dans le champ
+                            seuilAbsField.value = seuilArrondi;  // Affiche un nombre entier
+                        })
+                        .catch(error => console.error('Erreur:', error));
+                }
+            });
+        }
+    </script>
+{% endblock %}
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                Swal.fire({
+                    icon: '{{ label == 'success' ? 'info' : 'error' }}',  {# Utiliser 'info' pour succès (bleu) #}
+                    title: '{{ label == 'success' ? 'Succès' : 'Erreur' }}',
+                    text: '{{ message }}',
+                    showConfirmButton: true
+                });
+            {% endfor %}
+        {% endfor %}
+    </script>
+{% endblock %}
