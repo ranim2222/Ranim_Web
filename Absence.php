@@ -85,11 +85,6 @@ class Absence
 
     #[ORM\Column(type: 'integer', nullable: false)]
     #[Assert\NotBlank(message: 'Le CIN est obligatoire.')]
-    #[Assert\Length(
-        min: 6,
-        max: 12,
-        exactMessage: 'Le CIN doit contenir entre 6 et 12 caractères.'
-    )]
     #[Assert\Regex(
         pattern: '/^\d+$/', 
         message: 'Le CIN doit être composé uniquement de chiffres.'
@@ -112,7 +107,8 @@ class Absence
         maxSize: '2M',
         mimeTypes: ['image/jpeg', 'image/png', 'image/gif'],
         mimeTypesMessage: 'Seules les images JPEG, PNG et GIF sont acceptées.',
-        maxSizeMessage: 'Le fichier image ne doit pas dépasser 2 Mo.'
+        maxSizeMessage: 'Le fichier image ne doit pas dépasser 2 Mo.',
+        groups: ['image_required']  // Validation de l'image uniquement dans ce groupe
     )]
     private ?string $image_path = null;
 
@@ -135,7 +131,7 @@ class Absence
     public function setNbrAbs(int $nbr_abs): self
     {
         $this->nbr_abs = $nbr_abs;
-    return $this;
+       return $this;
     }
 
     public function getIDAbs(): ?int
@@ -151,5 +147,12 @@ class Absence
     public function setImagePath(?string $image_path): self
     {
         $this->image_path = $image_path;
-      return $this;
-    }}
+     return $this;
+    }
+
+    // Méthode pour vérifier si l'absence est justifiée
+    public function isJustifiee(): bool
+    {
+        return $this->type === 'justifiee';
+    }
+}
