@@ -1,17 +1,86 @@
+{# templates/BackOffice/base.html.twig #}
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>{% block title %}Kaiadmin - Bootstrap 5 Admin Dashboard{% endblock %}</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+    <link rel="icon" href="{{ asset('BackOffice/assets/img/kaiadmin/favicon.ico') }}" type="image/x-icon"/>
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    <!-- Fonts and icons -->
+    <script src="{{ asset('BackOffice/assets/js/plugin/webfont/webfont.min.js') }}"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{{ asset('BackOffice/assets/css/fonts.min.css') }}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/css/plugins.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/css/kaiadmin.min.css') }}"/>
+
+    <!-- CSS Just for demo purpose -->
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/css/demo.css') }}"/>
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+<div class="wrapper">
+    <!-- Sidebar -->
+    {% include 'BackOffice/includes/sidebar.html.twig' %}
+    <!-- End Sidebar -->
+
+    <div class="main-panel">
+        <!-- Navbar -->
+        {% include 'BackOffice/includes/navbar.html.twig' %}
+        <!-- End Navbar -->
+
+        <!-- Main Content -->
+        <div class="container">
+            {% block body %}{% endblock %}
+        </div>
+
+        <!-- Footer -->
+        {% include 'BackOffice/includes/footer.html.twig' %}
+    </div>
+</div>
+
+<!-- Core JS Files -->
+<script src="{{ asset('BackOffice/assets/js/core/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/core/popper.min.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/core/bootstrap.min.js') }}"></script>
+
+<!-- Plugins -->
+<script src="{{ asset('BackOffice/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/plugin/chart.js/chart.min.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/plugin/chart-circle/circles.min.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/plugin/datatables/datatables.min.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/plugin/jsvectormap/jsvectormap.min.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/plugin/jsvectormap/world.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
+
+<!-- Kaiadmin JS -->
+<script src="{{ asset('BackOffice/assets/js/kaiadmin.min.js') }}"></script>
+
+<!-- Demo Scripts (optionnel) -->
+<script src="{{ asset('BackOffice/assets/js/setting-demo.js') }}"></script>
+<script src="{{ asset('BackOffice/assets/js/demo.js') }}"></script>
+
+{% block javascripts %}{% endblock %}
+</body>
 </html>
