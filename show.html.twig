@@ -1,34 +1,51 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Penalite{% endblock %}
+{% block title %}Absence{% endblock %}
 
 {% block body %}
-    <h1>Penalite</h1>
+    <h1>Absence</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>ID_pen</th>
-                <td>{{ penalite.IDPen }}</td>
+                <th>Date</th>
+                <td>{{ absence.Date ? absence.Date|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Nbr_abs</th>
+                <td>{{ absence.nbrAbs }}</td>
             </tr>
             <tr>
                 <th>Type</th>
-                <td>{{ penalite.type }}</td>
+                <td>{{ absence.type }}</td>
             </tr>
             <tr>
-                <th>Seuil_abs</th>
-                <td>{{ penalite.seuilAbs }}</td>
+                <th>ID_abs</th>
+                <td>{{ absence.IDAbs }}</td>
             </tr>
             <tr>
                 <th>Cin</th>
-                <td>{{ penalite.cin }}</td>
+                <td>{{ absence.cin }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>
+                   {% if absence.image_path %}
+    <img src="{{ asset('uploads/' ~ absence.image_path) }}" alt="Absence Image" class="img-fluid">
+    <br>
+    <small>Path: {{ asset('uploads/' ~ absence.image_path) }}</small>
+{% else %}
+    Aucune image disponible
+{% endif %}
+
+                </td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_penalite_index') }}">back to list</a>
+    <a href="{{ path('app_absence_index') }}">Back to list</a>
 
-    <a href="{{ path('app_penalite_edit', {'ID_pen': penalite.ID_pen}) }}">edit</a>
+    <a href="{{ path('app_absence_edit', {'ID_abs': absence.IDAbs}) }}">Edit</a>
 
-    {{ include('penalite/_delete_form.html.twig') }}
+    {{ include('absence/_delete_form.html.twig') }}
 {% endblock %}

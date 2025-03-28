@@ -8,6 +8,15 @@
 
 {{ form_start(form, { 'attr': {'novalidate': 'novalidate'} }) }}
 
+    {# Champ Date avec l'attribut 'required' mis à false #}
+    {{ form_row(form.Date, { 'attr': {'required': false} }) }}
+    {{ form_errors(form.Date) }}
+
+    
+    {# Champ Nbr_abs avec l'attribut 'required' mis à false #}
+    {{ form_row(form.nbr_abs, { 'attr': {'required': false} }) }}
+    {{ form_errors(form.nbr_abs) }}
+    
     {# Champ Type avec l'attribut 'required' mis à false #}
     {{ form_row(form.type, { 'attr': {'required': false} }) }}
     {{ form_errors(form.type) }}
@@ -16,10 +25,12 @@
     {{ form_row(form.cin, { 'attr': {'required': false} }) }}
     {{ form_errors(form.cin) }}
 
-    {# Champ Seuil_abs avec l'attribut 'required' mis à false #}
-    {{ form_row(form.seuil_abs, { 'attr': {'required': false} }) }}
-    {{ form_errors(form.seuil_abs) }}
+    {# Condition pour afficher le champ d'image uniquement si le type est "justifiée" #}
+    {% if form.type.vars.value == 'justifiee' %}
+        {{ form_row(form.image_path, { 'attr': {'required': false} }) }}
+        {{ form_errors(form.image_path) }}
+    {% endif %}
 
-    <button class="btn">{{ button_label|default('Enregistrer') }}</button>
-
+    <button class="btn">{{ button_label|default('Save') }}</button>
+    
 {{ form_end(form) }}

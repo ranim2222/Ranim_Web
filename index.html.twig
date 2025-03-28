@@ -1,37 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Penalite index{% endblock %}
+{% block title %}Absence index{% endblock %}
 
 {% block body %}
-    <h1>Penalite index</h1>
+    <h1>Absence index</h1>
 
     <table class="table">
         <thead>
             <tr>
+                <th>Date</th>
+                <th>Nbr_abs</th>
                 <th>Type</th>
-                <th>Seuil_abs</th>
                 <th>Cin</th>
+                <th>Image</th> <!-- Affichage du lien de l'image -->
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for penalite in penalites %}
+        {% for absence in absences %}
             <tr>
-                <td>{{ penalite.type }}</td>
-                <td>{{ penalite.seuilAbs }}</td>
-                <td>{{ penalite.cin }}</td>
+                <td>{{ absence.Date ? absence.Date|date('Y-m-d') : '' }}</td>
+                <td>{{ absence.nbrAbs }}</td>
+                <td>{{ absence.type }}</td>
+                <td>{{ absence.cin }}</td>
                 <td>
-                    <a href="{{ path('app_penalite_show', {'ID_pen': penalite.ID_pen}) }}">show</a>
-                    <a href="{{ path('app_penalite_edit', {'ID_pen': penalite.ID_pen}) }}">edit</a>
+                    {% if absence.imagePath %}
+                        <a href="{{ asset(absence.imagePath) }}" target="_blank">Voir l'image</a>
+                    {% else %}
+                        Aucune image disponible
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('app_absence_show', {'ID_abs': absence.IDAbs}) }}">Show</a>
+                    <a href="{{ path('app_absence_edit', {'ID_abs': absence.IDAbs}) }}">Edit</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">No records found</td> {# ✅ colspan ajusté après suppression de l'ID #}
+                <td colspan="6">No records found</td>  {# ✅ colspan ajusté après suppression de l'ID #}
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_penalite_new') }}">Create new</a>
+    <a href="{{ path('app_absence_new') }}">Create new</a>
 {% endblock %}
