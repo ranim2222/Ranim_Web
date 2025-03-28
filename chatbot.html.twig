@@ -1,0 +1,26 @@
+{# chatbot.html.twig #}
+
+<h1>Consulter les informations concernant vos absences et pénalités</h1>
+
+{# Affichage du message, si présent #}
+{% if message is defined %}
+    <div class="message">{{ message }}</div>
+{% endif %}
+
+{# Affichage du formulaire pour CIN #}
+{% if cin is not defined %}
+    {{ form_start(form) }}
+        {{ form_row(form.cin) }}
+        <button type="submit">Envoyer</button>
+    {{ form_end(form) }}
+{% endif %}
+
+{# Si le CIN est valide et qu'on est dans la deuxième étape, afficher les choix #}
+{% if cin is defined %}
+    <p>Vous avez saisi le CIN : {{ cin }}.</p>
+    <h2>Que voulez-vous savoir ?</h2>
+    {{ form_start(form) }}
+        {{ form_row(form.choix) }}
+        <button type="submit">Envoyer</button>
+    {{ form_end(form) }}
+{% endif %}
