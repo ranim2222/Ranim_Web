@@ -18,7 +18,8 @@
                 {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
                     <div class="form-group">
                         {{ form_label(form.cin, 'Numéro CIN', {'label_attr': {'class': 'control-label'}}) }}
-                        {{ form_widget(form.cin, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_widget(form.cin, {'attr': {'class': 'form-control', 'autocomplete': 'off'}}) }}
+
                         {{ form_errors(form.cin) }}
                     </div>
                     <button type="submit" class="btn btn-primary">Envoyer</button>
