@@ -37,20 +37,24 @@ final class AbsenceController extends AbstractController
             $type = $form->get('type')->getData(); // Récupérer le type d'absence
         
             if ($type === 'justifiee' && $file) { // Vérifie si le type est "Justifiée"
+                // Générer un nom de fichier unique
                 $filename = uniqid() . '.' . $file->guessExtension();
-        
+
                 try {
                     $uploadsDirectory = $this->getParameter('kernel.project_dir') . '/public/uploads';
                     $file->move($uploadsDirectory, $filename);
+                    // Sauvegarder le chemin de l'image
                     $absence->setImagePath('uploads/' . $filename);
                     $this->addFlash('success', 'Image téléchargée avec succès.');
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
                 }
-            } else {
-                $absence->setImagePath(null); // Si ce n'est pas justifié, pas d'image
+            } elseif ($type !== 'justifiee') {
+                // Si le type n'est pas justifié, s'assurer qu'aucune image n'est assignée
+                $absence->setImagePath(null);
             }
         
+            // Persister l'entité Absence
             $entityManager->persist($absence);
             $entityManager->flush();
 
@@ -80,6 +84,24 @@ final class AbsenceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Si une nouvelle image est soumise, gérer l'upload et l'assignation
+            $file = $form->get('image_path')->getData();
+            $type = $form->get('type')->getData();
+
+            if ($type === 'justifiee' && $file) {
+                $filename = uniqid() . '.' . $file->guessExtension();
+
+                try {
+                    $uploadsDirectory = $this->getParameter('kernel.project_dir') . '/public/uploads';
+                    $file->move($uploadsDirectory, $filename);
+                    $absence->setImagePath('uploads/' . $filename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
+                }
+            } elseif ($type !== 'justifiee') {
+                $absence->setImagePath(null); // Si non justifié, on supprime l'image
+            }
+
             $entityManager->flush();
 
             $this->addFlash('success', 'L\'absence a été mise à jour avec succès.');
@@ -89,7 +111,7 @@ final class AbsenceController extends AbstractController
 
         return $this->render('absence/edit.html.twig', [
             'absence' => $absence,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
