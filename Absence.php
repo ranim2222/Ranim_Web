@@ -11,9 +11,9 @@ use App\Repository\AbsenceRepository;
 #[ORM\Table(name: 'absence')]
 class Absence
 {
-    #[ORM\Column(type: 'date', nullable: false)]
-    #[Assert\NotNull(message: 'La date est obligatoire.')]
-    #[Assert\NotBlank(message: 'La date est obligatoire.')]
+    // La propriété Date est nullable
+    #[ORM\Column(type: 'date', nullable: true)]  // La date peut être null
+    #[Assert\NotBlank(message: 'La date est obligatoire.')]  // Assure que la date n'est pas vide si présente
     #[Assert\LessThan('today', message: 'La date doit être dans le passé.')]
     private ?\DateTimeInterface $Date = null;
 
@@ -22,7 +22,8 @@ class Absence
         return $this->Date;
     }
 
-    public function setDate(\DateTimeInterface $Date): self
+    // Méthode qui accepte une DateTimeInterface ou null
+    public function setDate(?\DateTimeInterface $Date): self
     {
         $this->Date = $Date;
         return $this;
@@ -130,8 +131,8 @@ class Absence
 
     public function setNbrAbs(int $nbr_abs): self
     {
-        $this->nbr_abs = $nbr_abs;
-       return $this;
+    $this->nbr_abs = $nbr_abs;
+        return $this;
     }
 
     public function getIDAbs(): ?int
@@ -147,7 +148,7 @@ class Absence
     public function setImagePath(?string $image_path): self
     {
         $this->image_path = $image_path;
-     return $this;
+      return $this;
     }
 
     // Méthode pour vérifier si l'absence est justifiée
