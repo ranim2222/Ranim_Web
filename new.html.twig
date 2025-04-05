@@ -1,50 +1,95 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Créer une nouvelle absence</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Créer une nouvelle absence</h1>
 
-    {# Affichage des messages de flash si existants #}
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <script>
-                Swal.fire({
-                    icon: '{{ label == 'success' ? 'info' : 'error' }}',  {# Utiliser 'info' pour succès (bleu) #}
-                    title: '{{ label == 'success' ? 'Succès' : 'Erreur' }}',
-                    text: '{{ message }}',
-                    showConfirmButton: true
-                });
-            </script>
+        {# Affichage des messages de flash si existants #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <script>
+                    Swal.fire({
+                        icon: '{{ label == 'success' ? 'info' : 'error' }}',  {# Utiliser 'info' pour succès (bleu) #}
+                        title: '{{ label == 'success' ? 'Succès' : 'Erreur' }}',
+                        text: '{{ message }}',
+                        showConfirmButton: true
+                    });
+                </script>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
 
-    {{ form_start(form, { 'attr': {'novalidate': 'novalidate'} }) }} {# Désactive toute la validation HTML #}
-        {{ form_row(form.Date) }}
-        {{ form_row(form.nbr_abs) }}
-        {{ form_row(form.type) }}
-        {{ form_row(form.cin) }}
-        {{ form_row(form.image_path) }}
-        <button class="btn">Enregistrer</button>
-    {{ form_end(form) }}
+        {# Formulaire d'absence #}
+        <div class="card p-4 shadow-sm">
+            {{ form_start(form, { 'attr': {'novalidate': 'novalidate'} }) }} {# Désactive toute la validation HTML #}
 
-    {# Lien vers la liste des absences après ajout #}
-    <a href="{{ path('app_absence_index') }}" class="btn btn-secondary">Retour à la liste des absences</a>
+            <div class="form-group mb-3">
+                {{ form_label(form.Date, 'Date de l\'absence', {'attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.Date, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.Date) }}
+            </div>
 
-    {# Lien vers la liste des pénalités #}
-    <a href="{{ path('app_penalite_new') }}" class="btn btn-secondary">Retour à la liste des pénalités</a>
+            <div class="form-group mb-3">
+                {{ form_label(form.nbr_abs, 'Nombre d\'absences', {'attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.nbr_abs, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.nbr_abs) }}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.type, 'Type d\'absence', {'attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.type) }}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.cin, 'Numéro CIN', {'attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.cin, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.cin) }}
+            </div>
+
+            <div class="form-group mb-3" id="imageField">
+                {{ form_label(form.image_path, 'Image', {'attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.image_path, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.image_path) }}
+            </div>
+
+            <button class="btn btn-primary w-100">Enregistrer</button>
+
+            {{ form_end(form) }}
+        </div>
+
+        {# Lien vers la liste des absences après ajout #}
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_absence_index') }}" class="btn btn-secondary">Retour à la liste des absences</a>
+        </div>
+
+        {# Lien vers la liste des pénalités #}
+        <div class="mt-2 text-center">
+            <a href="{{ path('app_penalite_new') }}" class="btn btn-secondary">Retour à la liste des pénalités</a>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                Swal.fire({
-                    icon: '{{ label == 'success' ? 'info' : 'error' }}',  {# Utiliser 'info' pour succès (bleu) #}
-                    title: '{{ label == 'success' ? 'Succès' : 'Erreur' }}',
-                    text: '{{ message }}',
-                    showConfirmButton: true
-                });
-            {% endfor %}
-        {% endfor %}
+        // Fonction pour cacher ou afficher le champ image selon le type d'absence
+        document.addEventListener('DOMContentLoaded', function () {
+            var typeField = document.querySelector('[name="absence[type]"]');
+            var imageField = document.getElementById('imageField');  // Sélectionner le div contenant le champ image
+
+            function toggleImageField() {
+                if (typeField.value === 'justifiee') {
+                    imageField.style.display = 'block'; // Afficher le champ image
+                } else {
+                    imageField.style.display = 'none'; // Masquer le champ image
+                }
+            }
+
+            // Initialiser l'affichage en fonction du type actuel sélectionné
+            toggleImageField();
+
+            // Ajouter un écouteur d'événement pour changer la visibilité lors du changement de type
+            typeField.addEventListener('change', toggleImageField);
+        });
     </script>
 {% endblock %}
