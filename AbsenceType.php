@@ -18,27 +18,20 @@ class AbsenceType extends AbstractType
         $builder
             ->add('Date', DateType::class, [
                 'widget' => 'single_text',
-                // Suppression des contraintes ici, car elles sont déjà définies dans l'entité Absence
             ])
-            ->add('nbr_abs', TextType::class, [
-                // Suppression des contraintes ici, car elles sont déjà définies dans l'entité Absence
-            ])
+            ->add('nbr_abs', TextType::class, [])
             ->add('type', ChoiceType::class, [
                 'choices' => [
                     'Justifiée' => 'justifiee',
                     'Non justifiée' => 'non_justifiee',
                 ],
                 'placeholder' => 'Sélectionner un type',
-                // Suppression des contraintes ici, car elles sont déjà définies dans l'entité Absence
             ])
-            ->add('cin', TextType::class, [
-                // Suppression des contraintes ici, car elles sont déjà définies dans l'entité Absence
-            ])
+            ->add('cin', TextType::class, [])
             ->add('image_path', FileType::class, [
                 'label' => 'Télécharger une image',
                 'mapped' => false, // Empêche Symfony de lier ce champ directement à l'entité
                 'required' => false, // Image facultative
-                // Suppression des contraintes ici, car elles sont déjà définies dans l'entité Absence
             ]);
     }
 
