@@ -9,28 +9,42 @@
 {{ form_start(form, { 'attr': {'novalidate': 'novalidate'} }) }}
 
     {# Champ Date avec l'attribut 'required' mis à false #}
-    {{ form_row(form.Date, { 'attr': {'required': false} }) }}
-    {{ form_errors(form.Date) }}
+    <div class="form-group mb-3">
+        {{ form_label(form.Date, 'Date de l\'absence', {'attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.Date, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.Date) }}
+    </div>
 
-    
     {# Champ Nbr_abs avec l'attribut 'required' mis à false #}
-    {{ form_row(form.nbr_abs, { 'attr': {'required': false} }) }}
-    {{ form_errors(form.nbr_abs) }}
+    <div class="form-group mb-3">
+        {{ form_label(form.nbr_abs, 'Nombre d\'absences', {'attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.nbr_abs, {'attr': {'class': 'form-control',  'autocomplete': 'off'}}) }}
+        {{ form_errors(form.nbr_abs) }}
+    </div>
     
     {# Champ Type avec l'attribut 'required' mis à false #}
-    {{ form_row(form.type, { 'attr': {'required': false} }) }}
-    {{ form_errors(form.type) }}
+    <div class="form-group mb-3">
+        {{ form_label(form.type, 'Type d\'absence', {'attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.type) }}
+    </div>
     
     {# Champ Cin avec l'attribut 'required' mis à false #}
-    {{ form_row(form.cin, { 'attr': {'required': false} }) }}
-    {{ form_errors(form.cin) }}
+    <div class="form-group mb-3">
+        {{ form_label(form.cin, 'Numéro CIN', {'attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.cin, {'attr': {'class': 'form-control',  'autocomplete': 'off'}}) }}
+        {{ form_errors(form.cin) }}
+    </div>
 
-    {# Condition pour afficher le champ d'image uniquement si le type est "justifiée" #}
+    {# Condition pour afficher et valider l'image uniquement si le type est "justifiée" #}
     {% if form.type.vars.value == 'justifiee' %}
-        {{ form_row(form.image_path, { 'attr': {'required': false} }) }}
-        {{ form_errors(form.image_path) }}
+        <div class="form-group mb-3">
+            {{ form_label(form.image_path, 'Image', {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.image_path, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.image_path) }}
+        </div>
     {% endif %}
 
-    <button class="btn">{{ button_label|default('Save') }}</button>
-    
+    <button class="btn btn-primary w-100">{{ button_label|default('Enregistrer') }}</button>
+
 {{ form_end(form) }}
