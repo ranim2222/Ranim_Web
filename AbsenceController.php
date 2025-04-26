@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\GestionAbsence;
 
 use App\Entity\Absence;
 use App\Form\AbsenceType;
@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Snappy\Pdf;
 
 #[Route('/absence')]
 final class AbsenceController extends AbstractController
@@ -19,7 +20,7 @@ final class AbsenceController extends AbstractController
     #[Route(name: 'app_absence_index', methods: ['GET'])]
     public function index(AbsenceRepository $absenceRepository): Response
     {
-        return $this->render('absence/index.html.twig', [
+        return $this->render('GestionAbsence/absence/index.html.twig', [
             'absences' => $absenceRepository->findAll(),
         ]);
     }
@@ -63,7 +64,7 @@ final class AbsenceController extends AbstractController
             return $this->redirectToRoute('app_absence_index');
         }
 
-        return $this->render('absence/new.html.twig', [
+        return $this->render('GestionAbsence/absence/new.html.twig', [
             'absence' => $absence,
             'form' => $form->createView(),
         ]);
@@ -72,7 +73,7 @@ final class AbsenceController extends AbstractController
     #[Route('/{ID_abs}', name: 'app_absence_show', methods: ['GET'])]
     public function show(Absence $absence): Response
     {
-        return $this->render('absence/show.html.twig', [
+        return $this->render('GestionAbsence/absence/show.html.twig', [
             'absence' => $absence,
         ]);
     }
@@ -109,7 +110,7 @@ final class AbsenceController extends AbstractController
             return $this->redirectToRoute('app_absence_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('absence/edit.html.twig', [
+        return $this->render('GestionAbsence/absence/edit.html.twig', [
             'absence' => $absence,
             'form' => $form->createView(),
         ]);
@@ -129,4 +130,36 @@ final class AbsenceController extends AbstractController
 
         return $this->redirectToRoute('app_absence_index', [], Response::HTTP_SEE_OTHER);
     }
+    #[Route('/absence/pdf', name: 'app_absence_pdf', methods: ['GET'])]
+public function generatePdf(AbsenceRepository $absenceRepository, Pdf $knpSnappy): Response
+{
+    // Récupérer toutes les absences depuis la base de données
+    $absences = $absenceRepository->findAll();
+
+    // Vérifier si chaque absence contient un ID valide
+    foreach ($absences as $absence) {
+        if (!$absence->getIDAbs()) {
+            // Gérer les absences sans ID ou avec un ID invalide
+            $this->addFlash('error', 'Une absence a un ID invalide.');
+            return $this->redirectToRoute('app_absence_index');
+        }
+    }
+
+    // Générer le contenu HTML pour le PDF depuis le fichier Twig
+    $html = $this->renderView('GestionAbsence/absence/pdf.html.twig', [
+        'absences' => $absences,
+    ]);
+
+    // Générer le PDF à partir du contenu HTML
+    $pdfContent = $knpSnappy->getOutputFromHtml($html);
+
+    // Retourner le PDF dans la réponse HTTP
+    return new Response($pdfContent, 200, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="absences.pdf"',
+    ]);
+}
+
+
+   
 }
