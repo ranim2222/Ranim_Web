@@ -43,5 +43,11 @@
         </tbody>
     </table>
 
+    <!-- Bouton pour générer le PDF -->
+    <div>
+        <a href="{{ path('app_absence_pdf') }}" class="btn btn-primary" target="_blank">Générer le PDF</a>
+    </div>
+
     <a href="{{ path('app_absence_new') }}">Create new</a>
+    
 {% endblock %}
