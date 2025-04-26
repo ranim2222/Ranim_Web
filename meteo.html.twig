@@ -1,0 +1,166 @@
+{% block body %}
+    <div class="weather-container">
+        <h1>Météo actuelle à {{ weather.name }}</h1>
+        <div class="weather-info">
+            <p><strong>Température :</strong> {{ weather.main.temp }}°C</p>
+            <p><strong>Condition :</strong> {{ weather.weather[0].description|capitalize }}</p>
+            <p><strong>Humidité :</strong> {{ weather.main.humidity }}%</p>
+            <p><strong>Vent :</strong> {{ weather.wind.speed }} km/h</p>
+        </div>
+
+        <div class="weather-message">
+            {% set condition = weather.weather[0].main|lower %}
+
+            {# Vérification des conditions spécifiques pour les messages #}
+            {% if condition == 'clear' %}
+                <div class="alert alert-success fadeIn">
+                    ✅ C'est un jour de travail !
+                </div>
+            {% elseif condition == 'clouds' %}
+                <div class="alert alert-info fadeIn">
+                    ☁️ Un peu nuageux, mais c'est un jour de travail !
+                </div>
+            {% elseif condition == 'rain' or condition == 'drizzle' %}
+                <div class="alert alert-danger fadeIn">
+                    ⚠️ Entreprise fermée - Pluie !
+                </div>
+            {% elseif condition == 'thunderstorm' %}
+                <div class="alert alert-danger fadeIn">
+                    ⚠️ Entreprise fermée - Tempête !
+                </div>
+            {% elseif condition == 'snow' %}
+                <div class="alert alert-danger fadeIn">
+                    ⚠️ Entreprise fermée - Neige !
+                </div>
+            {% else %}
+                <div class="alert alert-warning fadeIn">
+                    ⚠️ Conditions météo incertaines.
+                </div>
+            {% endif %}
+        </div>
+
+        {# Ajout du lien pour revenir à l'index des absences #}
+        <div class="back-link">
+            <a href="{{ path('chatbot') }}" class="btn btn-primary">Retour </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <style>
+        .weather-container {
+            text-align: center;
+            padding: 50px;  /* Augmenter le padding pour agrandir le cadre */
+            max-width: 90%;  /* Limite de la largeur du cadre */
+            margin: 0 auto;  /* Centrer le cadre */
+            background: #f0f8ff;
+            border-radius: 15px;  /* Augmenter le rayon des coins */
+            box-shadow: 0 10px 15px rgba(0,0,0,0.2);  /* Ombre plus marquée */
+            animation: fadeIn 2s ease-out;
+        }
+
+        .weather-info p {
+            font-size: 22px;  /* Agrandir la taille du texte */
+            color: #333;
+        }
+
+        .weather-message .alert {
+            padding: 20px;  /* Augmenter le padding des alertes */
+            font-size: 22px;  /* Agrandir le texte dans les alertes */
+            margin-top: 20px;
+            border-radius: 8px;  /* Coin des alertes plus arrondis */
+            transition: transform 0.3s ease;
+        }
+
+        .alert-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .alert-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .alert-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .alert-warning {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        /* Animation for fading in */
+        .fadeIn {
+            animation: fadeIn 2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Background color change based on weather */
+        .weather-container.sunny {
+            background-color: #ffcc00;
+        }
+
+        .weather-container.cloudy {
+            background-color: #99ccff;
+        }
+
+        .weather-container.rainy {
+            background-color: #4e73df;
+        }
+
+        .weather-container.stormy {
+            background-color: #dc3545;
+        }
+
+        /* Style for back link button */
+        .back-link {
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;  /* Augmenter le padding du bouton */
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        // JavaScript to change background color dynamically
+        document.addEventListener('DOMContentLoaded', function () {
+            var weatherCondition = '{{ weather.weather[0].main|lower }}';
+            var weatherContainer = document.querySelector('.weather-container');
+
+            if (weatherCondition === 'clear' || weatherCondition === 'sunny') {
+                weatherContainer.classList.add('sunny');
+            } else if (weatherCondition === 'clouds') {
+                weatherContainer.classList.add('cloudy');
+            } else if (weatherCondition === 'rain' || weatherCondition === 'drizzle') {
+                weatherContainer.classList.add('rainy');
+            } else if (weatherCondition === 'thunderstorm') {
+                weatherContainer.classList.add('stormy');
+            }
+        });
+    </script>
+{% endblock %}
